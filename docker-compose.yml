@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        - DEV=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - "db-svc"
+    # command: >
+    #   /sh -c "python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - backend
+  db-svc:
+    image: postgres:13.6
+    restart: always
+    environment:
+      POSTGRES_DATABASE: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password1234
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+networks:
+  backend:

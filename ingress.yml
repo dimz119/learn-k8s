@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: mydomain.com
+    http:
+      paths:
+      - path: /app1
+        pathType: Prefix
+        backend:
+          service:
+            name: app1-service
+            port:
+              name: http
+      - path: /app2
+        pathType: Prefix
+        backend:
+          service:
+            name: app2-service
+            port:
+              name: http

@@ -1,0 +1,31 @@
+# dictionary
+person:
+  # k/v: string
+  name: John Smith
+  # k/v: number
+  age: 35
+  # k/v: boolean
+  isMarried: true
+
+  # nested dictionary
+  favoriteFoods:
+    # list
+    - Pizza
+    - Tacos
+    - Sushi
+  # date birthday
+  birthdate: 1987-05-12
+
+# {
+#   "person": {
+#     "name": "John Smith",
+#     "age": 35,
+#     "isMarried": true,
+#     "favoriteFoods": [
+#       "Pizza",
+#       "Tacos",
+#       "Sushi"
+#     ],
+#     "birthdate": "1987-05-12"
+#   }
+# }

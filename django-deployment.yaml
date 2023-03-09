@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      serviceAccountName: jarvis-svc-acct
+      containers:
+        - name: django-app
+          image: joonlee0228/django:0.0.1
+          resources:
+            requests:
+              cpu: "100m"
+          env:
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: django-app-secret
+                  key: username
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: django-app-configmap
+                  key: ENV
+            - name: PUB_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: django-app-configmap
+                  key: PUB_TOPIC
+            - name: CON_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: django-app-configmap
+                  key: CON_TOPIC
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 5 # specifies the number of seconds to wait before performing the first readiness check
+            periodSeconds: 10 # specifies the number of seconds to wait between subsequent checks.
+            timeoutSeconds: 5 # specifies the amount of time to wait for a response from the container before considering the check as failed
+            successThreshold: 1 # the number of successful readiness checks required before the container is considered ready
+            failureThreshold: 3 # specifies the number of failed readiness checks allowed before the container is considered unhealthy
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: django-svc
+# spec:
+#   type: NodePort
+#   selector:
+#     app: django-app
+#   ports:
+#   - name: django-app-port
+#     protocol: TCP
+#     port: 80 # This is the port number which makes a service visible to other services running within the same K8s cluster
+#     targetPort: 8000 # This port is the port on the POD where the service is running.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: postgres
+      port: 5432
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - name: postgres
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password1234
+            - name: POSTGRES_DB
+              value: postgres
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: django-service
+# spec:
+#   selector:
+#     app: django-app
+#   type: LoadBalancer
+#   ports:
+#     - name: http
+#       port: 80
+#       targetPort: 8000

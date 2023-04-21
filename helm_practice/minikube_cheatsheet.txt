@@ -1,0 +1,8 @@
+# ssh into minikube
+minikube ssh
+
+# check the docker images inside of minikube
+docker images
+
+# expose the service port
+minikube service my-wordpress --url

@@ -1,0 +1,57 @@
+# Installation doc
+https://helm.sh/docs/intro/install/
+
+# for Mac
+brew install helm
+
+# add chart repo
+# helm repo add [name] [url]
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# remove chart repo
+helm repo remove bitnami
+
+# list the repo
+helm repo list
+
+# search repo
+helm search repo bitnami
+helm search repo wordpress
+
+# search application versions
+helm search repo wordpress --versions
+
+# update repo
+helm repo update
+
+# install
+helm install my-wordpress bitnami/wordpress
+
+# install with custom parameter
+helm install my-wordpress bitnami/wordpress --set wordpressUsername=ABCD
+helm install my-wordpress bitnami/wordpress -f my-values.yaml
+helm install my-wordpress bitnami/wordpress --values my-values.yaml
+
+# upgrade with reuse command(based on installation values)
+helm upgrade my-wordpress bitnami/wordpress --reuse-values
+
+# check application status
+helm status my-wordpress
+
+# optional - for minikube
+minikube service my-wordpress --url
+
+# check the deployment status
+helm list
+
+# uninstall
+helm uninstall my-wordpress
+
+# uninstall with keeping history
+helm uninstall my-wordpress --keep-history
+
+# upgrade
+helm upgrade my-wordpress bitnami/wordpress -f my-values.yaml
+
+# rollback
+helm rollback my-wordpress 1

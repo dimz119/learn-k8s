@@ -27,12 +27,27 @@ helm repo update
 # install
 helm install my-wordpress bitnami/wordpress
 
+# install or upgrade
+helm upgrade --install my-wordpress bitnami/wordpress
+
+# within custom namespace
+helm install mydb bitnami/mysql --namespace ns1 --create-namespace
+
+# with random name
+helm install bitnami/mysql --generate-name
+
+# mark as failure after waiting time(default 5min)
+helm install bitnami/mysql --generate-name --wait --timeout 2m30s
+
+# atomic(rollback to prev successful release)
+helm install bitnami/mysql --generate-name --atomic
+
 # install with custom parameter
 helm install my-wordpress bitnami/wordpress --set wordpressUsername=ABCD
 helm install my-wordpress bitnami/wordpress -f my-values.yaml
 helm install my-wordpress bitnami/wordpress --values my-values.yaml
 
-# upgrade with reuse command(based on installation values)
+# upgrade with re-use command(based on installation values)
 helm upgrade my-wordpress bitnami/wordpress --reuse-values
 
 # check application status
@@ -53,5 +68,32 @@ helm uninstall my-wordpress --keep-history
 # upgrade
 helm upgrade my-wordpress bitnami/wordpress -f my-values.yaml
 
+# upgrade forcefully(will have the downtime)
+helm upgrade my-wordpress bitnami/wordpress -f my-values.yaml --force
+
+# cleanup on failed
+helm upgrade my-wordpress bitnami/wordpress -f my-values.yaml --cleanup-on-failure
+
 # rollback
 helm rollback my-wordpress 1
+
+# dry run
+helm install mydb bitnami/mysql -f my-values.yaml --dry-run
+
+# template
+helm template mydb bitnami/mysql -f my-values.yaml
+
+# get notes information
+helm get notes mydb
+
+# get customer values(not default value)
+helm get values mydb
+
+# get customer values(including default value)
+helm get values mydb --all
+
+# get revision value
+helm get values mydb --revision 1
+
+# get manifest of current release
+helm get manifest mydb

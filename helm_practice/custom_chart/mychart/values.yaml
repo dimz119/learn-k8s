@@ -1,6 +1,17 @@
 # Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+baseName:
+  suffix: "codemke"
+
+baseFlag:
+  isProd: true
+
+baseRegion:
+  - us-west-1
+  - us-east-1
+  - ap-east-1
+  - ap-northeast-2
 
 replicaCount: 1
 

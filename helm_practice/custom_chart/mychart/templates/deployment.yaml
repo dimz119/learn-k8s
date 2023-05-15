@@ -1,9 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
+
+{{- /* with */ -}}
+{{- with .Values.baseRegion }}
+regions:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+
+otherRegions:
+{{- range .Values.baseRegion }}
+  - {{. | quote}}
+{{- end}}
+
+image:
+{{- range $key,$value := .Values.image }}
+  - {{ $key }}: {{ $value }}
+{{- end}}
+
+customTemplate:
+  replicaCount: {{ include "mychart.customTemplate" . }}
+
+{{- /* Variable */ -}}
+{{ $var1 := "testVar1" }}
+{{ $var1 = "testVar2" }}
+{{ "var1" }}: {{ $var1 }}
+
 metadata:
-  name: {{ include "mychart.fullname" . }}
+  name: {{ include "mychart.fullname" . }}_
+
+  {{- /* values.yml */ -}}
+  {{- .Values.baseName.suffix | default 1234 }}_....
+
+  {{- /* Chart.yml */ -}}
+  {{- .Chart.AppVersion}}
   labels:
     {{- include "mychart.labels" . | nindent 4 }}
+
+    {{- "Hello: World" | upper | nindent 4 }}
+
+    {{- "env: " | nindent 4  }} {{- .Release.Namespace }}
+
+    {{- if not .Values.baseFlag.isProd }}
+    {{- "is_prod: true" | nindent 4}}
+    {{- else }}
+    {{- "is_prod: false" | nindent 4}}
+    {{- end }}
+
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

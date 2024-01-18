@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-ubuntu
+spec:
+  containers:
+  - name: my-ubuntu
+    image: joonlee0228/ubuntu:24.04
+    command: ["echo"] # ENTRYPOINT
+    args: ["Hello, Kubernetes!"] # CMD

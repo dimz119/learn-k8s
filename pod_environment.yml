@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-environment
+spec:
+  containers:
+  - name: my-ubuntu
+    image: ubuntu:24.04
+    command: ["sleep"]
+    args: ["infinity"]
+    env:
+      - name: ENV
+        value: develop
+      - name: CONFIG_MAP_SAMPLE
+        valueFrom:
+          configMapKeyRef:
+            name: django-app-configmap
+            key: PUB_TOPIC
+      - name: SECRET_SAMPLE
+        valueFrom:
+          secretKeyRef:
+            name: django-app-secret
+            key: username

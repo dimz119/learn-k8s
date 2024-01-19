@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-initialization
+spec:
+  containers:
+  - name: app-container
+    image: ubuntu:24.04
+    command: ["sleep"]
+    args: ["infinity"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /app/shared
+
+  initContainers:
+  - name: init-container
+    image: busybox
+    command: ['sh', '-c', 'echo Shared data from Init Container > /shared-data/init-file && sleep 5']
+    volumeMounts:
+    - name: shared-data
+      mountPath: /shared-data
+
+  volumes:
+  - name: shared-data
+    emptyDir: {}

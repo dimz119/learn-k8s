@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain # Delete or Recycle
+  storageClassName: standard # or ssd, aws-ebs, gp2 and etc 
+  hostPath:
+    path: /data/my-pv/

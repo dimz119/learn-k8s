@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-pod
+spec:
+  containers:
+  - name: my-container
+    image: ubuntu:24.04
+    command: ["sleep"]
+    args: ["infinity"]
+    volumeMounts:
+    - name: my-volume
+      mountPath: /mnt/data/
+  volumes:
+  - name: my-volume
+    persistentVolumeClaim:
+      claimName: my-pvc
